@@ -1,0 +1,14 @@
+# The edge in front of the portfolio: Caddy gets and renews the Let's Encrypt
+# certificate for the domain by itself, redirects HTTP to HTTPS, and forwards
+# every request to the site container on the shared Docker network.
+# SITE_DOMAIN and PUBLIC_IP come from the container's environment.
+
+{$SITE_DOMAIN} {
+	header Strict-Transport-Security "max-age=31536000"
+	reverse_proxy motion-portfolio:80
+}
+
+# Old links to the bare IP land on the domain.
+http://{$PUBLIC_IP} {
+	redir https://{$SITE_DOMAIN}{uri} permanent
+}
