@@ -1,7 +1,7 @@
 // Beat sheet for the derivative explainer, in seconds.
 import { interpolate } from "remotion";
-import { ease } from "../../kit";
-import type { Cue } from "../../kit";
+import { ease } from "../../kit/theme";
+import type { Cue } from "../../kit/cues";
 import { DURATION, GAPS, numbers } from "./model";
 
 export const T = {

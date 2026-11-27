@@ -1,8 +1,8 @@
 // Beat sheet for the arctan explainer, in seconds, and where the target is at
 // every moment. The turret, the triangle and the panels all read from here.
 import { interpolate } from "remotion";
-import { ease } from "../../kit";
-import type { Cue } from "../../kit";
+import { ease } from "../../kit/theme";
+import type { Cue } from "../../kit/cues";
 import {
   ABOVE_TARGET,
   MIRROR_TARGET,

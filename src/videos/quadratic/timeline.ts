@@ -1,6 +1,6 @@
 // Beat sheet for the quadratic explainer, in seconds. Every animation and
 // caption keys off these, so retiming a chapter moves everything in it.
-import type { Cue } from "../../kit";
+import type { Cue } from "../../kit/cues";
 import type { Model } from "./model";
 
 export const T = {

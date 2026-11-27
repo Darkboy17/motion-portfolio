@@ -1,7 +1,7 @@
 // The car in the derivative explainer: distance s(t) = -0.3t^3 + 4.5t^2 over
 // 10 seconds. It pulls away, peaks at 5 s and stops at 10 s. Every number on
 // screen comes from these functions.
-import { derivative, fmt, secantSlope } from "../../kit";
+import { derivative, fmt, secantSlope } from "../../kit/math";
 
 export const A3 = -0.3;
 export const A2 = 4.5;

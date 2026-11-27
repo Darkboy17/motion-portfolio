@@ -9,7 +9,7 @@ import {
   signed,
   solveQuadratic,
   vertex,
-} from "../../kit";
+} from "../../kit/math";
 
 export const quadraticSchema = z.object({
   launchSpeed: z.number().min(11).max(19).step(0.5).describe("Upward launch speed, m/s"),

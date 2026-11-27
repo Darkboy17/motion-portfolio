@@ -1,6 +1,6 @@
 // Positions, angles and the homing-missile simulation for the arctan explainer.
 // World units with y pointing up; the turret sits at the origin.
-import { aim, naiveAim, shortestTurn, toDeg } from "../../kit";
+import { aim, naiveAim, shortestTurn, toDeg } from "../../kit/math";
 
 export type Vec = { x: number; y: number };
 
