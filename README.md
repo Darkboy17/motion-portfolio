@@ -25,6 +25,13 @@ npm test                    # unit tests for the maths and models
 
 Needs Node 22 and ffmpeg. Remotion fetches its own headless Chrome the first time it renders.
 
+Or with only Docker:
+
+```bash
+docker build -t motion-portfolio .            # renders every piece inside Docker and serves the page
+docker run -p 8080:80 motion-portfolio        # http://localhost:8080
+```
+
 ## How the repo is laid out
 
 ```
@@ -59,6 +66,16 @@ Everything a piece needs to look consistent lives in `src/kit/`, and every piece
 2. **Model.** The maths or data behind the piece is a set of pure functions with unit tests. Nothing on screen is typed in by hand: the quadratic explainer re-derives every number from three props, which Remotion Studio exposes through a zod schema.
 3. **Scenes.** Built from kit components, with anything piece-specific kept in the piece's folder.
 4. **Look at it.** Render stills at every beat, look at each one, fix, re-render. Then a full render, and frames pulled from the MP4 to check the encode.
+
+## Deployment
+
+Every push to `main` runs [`.github/workflows/ci-cd.yml`](.github/workflows/ci-cd.yml):
+
+1. **Check**: lint, typecheck, unit tests, the asset generators, and one rendered still per piece (pull requests stop here).
+2. **Render and build the image**: earlier renders come back from the Actions cache, and `npm run render -- --changed` re-renders only the pieces whose source changed. Then the showreel and page are built and the nginx image is pushed to `ghcr.io/darkboy17/motion-portfolio`, tagged with the commit.
+3. **Deploy**: over SSH, the Oracle VM pulls that image and swaps the running container ([`deploy/remote-deploy.sh`](deploy/remote-deploy.sh)); the job then checks `/healthz` from outside.
+
+The repository needs two variables (`VM_HOST`, `VM_USER`) and two secrets (`VM_SSH_KEY`, a key used only for deploys, and `VM_KNOWN_HOSTS`). To roll back, run the deploy script with an earlier commit's tag.
 
 ## Assets and licences
 

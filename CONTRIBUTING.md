@@ -48,4 +48,8 @@ npm run render -- arctan        # one piece
 npm run stills                  # one poster still per piece (what CI runs)
 ```
 
-Outputs go to `out/`, which is not committed.
+Outputs go to `out/`, which is not committed. `--changed` skips pieces whose inputs (their folder, their entry, the kit, `public/` and the lockfile) haven't changed since their last render; CI uses it so a fix to one piece re-renders only that piece.
+
+## Docker
+
+The `Dockerfile` has three targets: `toolchain` (Node, ffmpeg and Chrome's libraries, for renders that match CI on any machine), `web-prebuilt` (nginx serving a `site/dist` you built first; what CI deploys) and the default `web` (renders everything inside Docker, then serves it).

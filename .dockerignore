@@ -1,0 +1,7 @@
+# site/dist stays in the context: the web-prebuilt stage copies it.
+node_modules
+out
+.git
+.github
+docs
+*.log
