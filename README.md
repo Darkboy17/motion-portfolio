@@ -2,7 +2,7 @@
 
 2D motion graphics and animated explainers, built with [Remotion](https://www.remotion.dev), React and TypeScript. Six pieces, one shared component kit, and the tooling to render, check and publish them.
 
-<!-- PORTFOLIO_LINK -->
+**Watch them:** [the portfolio page](http://152.67.9.167) · by [Kordor Pyrbot](https://github.com/Darkboy17)
 
 | | Piece | Format | What it shows |
 | --- | --- | --- | --- |
@@ -67,3 +67,7 @@ Fonts are from Google Fonts (SIL Open Font License). Every sound is synthesized 
 ## Working on it
 
 See [CONTRIBUTING.md](CONTRIBUTING.md): one piece or kit change per pull request, Conventional Commits, and stills attached to every PR. CI runs lint, typecheck, tests, the asset generators, and a rendered still from every piece.
+
+## Licence
+
+Code and original assets: [MIT](LICENSE), © 2026 Kordor Pyrbot. Fonts keep their own licence (SIL OFL 1.1).
