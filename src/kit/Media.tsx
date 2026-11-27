@@ -1,5 +1,5 @@
 // Sound effects, music beds and Lottie clips. Every file referenced here is
-// listed with its licence in ASSETS.md.
+// listed with its source and licence in ASSETS.md.
 import React, { useEffect, useState } from "react";
 import {
   cancelRender,
@@ -14,35 +14,73 @@ import {
 import { Lottie } from "@remotion/lottie";
 import type { LottieAnimationData } from "@remotion/lottie";
 import { useSec } from "./motion";
+import manifest from "./sfx-manifest.json";
 
-export const SFX = [
-  "whoosh",
-  "swish",
-  "click",
-  "tick",
-  "pop",
-  "thump",
-  "chime",
-  "error",
-  "shimmer",
-  "type",
-] as const;
-export type SfxName = (typeof SFX)[number];
+type SfxEntry = { files: string[]; durations: number[]; gain: number };
+const LIBRARY = manifest as Record<keyof typeof manifest, SfxEntry>;
+export type SfxName = keyof typeof manifest;
+export const SFX = Object.keys(LIBRARY) as SfxName[];
 
-/** A one-shot sound. Place it 2 to 3 frames before the visual it belongs to. */
-export const Sfx: React.FC<{ at: number; name: SfxName; volume?: number; rate?: number }> = ({
-  at,
-  name,
-  volume = 0.5,
-  rate = 1,
-}) => {
+/** A stable number in [0, 1) for a string, so every render picks the same take. */
+const unit = (s: string) => {
+  let h = 2166136261;
+  for (let i = 0; i < s.length; i++) h = Math.imul(h ^ s.charCodeAt(i), 16777619);
+  return (h >>> 0) / 4294967296;
+};
+
+/**
+ * A recorded sound effect from public/sfx (see scripts/prepare-sfx.ts). Each name
+ * has several takes; unless `take` is given, the take and a small level offset
+ * (within 1.5 dB) come from the cue time, so repeated sounds vary the way real
+ * foley does and every render is identical. `gain` scales the name's own level.
+ * `dur` cuts a long take short with a quick fade. It starts 2 frames before
+ * `at`, because a hit that lands with its picture feels late.
+ */
+export const Sfx: React.FC<{
+  at: number;
+  name: SfxName;
+  gain?: number;
+  take?: number;
+  dur?: number;
+}> = ({ at, name, gain = 1, take, dur }) => {
+  const { fps } = useVideoConfig();
   const sec = useSec();
+  const entry = LIBRARY[name];
+  const n = entry.files.length;
+  const i = take === undefined ? Math.floor(unit(`${name}@${at}`) * n) : ((take % n) + n) % n;
+  const level = entry.gain * gain * Math.pow(10, ((unit(`${name}#${at}`) - 0.5) * 3) / 20);
+  const cut = dur !== undefined && dur < entry.durations[i];
+  const frames = Math.max(1, Math.ceil((cut ? (dur as number) : entry.durations[i]) * fps) + 2);
+  const fade = cut ? Math.max(1, Math.min(8, Math.floor(frames / 3))) : 0;
   return (
-    <Sequence from={Math.max(0, sec(at) - 2)} layout="none" name={`sfx:${name}`}>
-      <Html5Audio src={staticFile(`sfx/${name}.wav`)} volume={volume} playbackRate={rate} />
+    <Sequence
+      from={Math.max(0, sec(at) - 2)}
+      durationInFrames={frames}
+      layout="none"
+      name={`sfx:${name}`}
+    >
+      <Html5Audio
+        src={staticFile(entry.files[i])}
+        volume={(f) => (fade ? level * Math.min(1, Math.max(0, (frames - f) / fade)) : level)}
+      />
     </Sequence>
   );
 };
+
+/** The same sound several times, `step` seconds apart, cycling through its takes. */
+export const SfxRun: React.FC<{
+  at: number;
+  name: SfxName;
+  count: number;
+  step?: number;
+  gain?: number;
+}> = ({ at, name, count, step = 0.14, gain }) => (
+  <>
+    {Array.from({ length: count }, (_, i) => (
+      <Sfx key={i} at={at + i * step} name={name} take={i} gain={gain} />
+    ))}
+  </>
+);
 
 /** A looping music bed with fades at both ends. */
 export const Bed: React.FC<{
