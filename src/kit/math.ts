@@ -56,14 +56,18 @@ export const wrapAngle = (a: number) => {
 /** The signed shortest turn from angle `from` to angle `to`. */
 export const shortestTurn = (from: number, to: number) => wrapAngle(to - from);
 
-/** Evenly spaced "nice" tick values (steps of 1, 2 or 5 times a power of ten) covering [lo, hi]. */
+/**
+ * Evenly spaced "nice" tick values (steps of 1, 2 or 5 times a power of ten).
+ * The first tick is at or below `lo` and the last at or above `hi`.
+ */
 export const niceTicks = (lo: number, hi: number, target = 6): number[] => {
   const raw = (hi - lo) / Math.max(1, target);
   const pow = Math.pow(10, Math.floor(Math.log10(raw)));
   const step = [1, 2, 5, 10].map((m) => m * pow).find((s) => s >= raw) ?? 10 * pow;
-  const first = Math.ceil(lo / step - 1e-9) * step;
+  const first = Math.floor(lo / step + 1e-9) * step;
   const out: number[] = [];
-  for (let v = first; v <= hi + step * 1e-6; v += step) out.push(Math.round(v / step) * step || 0);
+  for (let v = first; v < hi + step * (1 - 1e-6); v += step)
+    out.push(Math.round(v / step) * step || 0);
   return out;
 };
 

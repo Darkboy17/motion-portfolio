@@ -88,6 +88,10 @@ describe("formatting", () => {
     expect(niceTicks(0, 150, 6)).toEqual([0, 50, 100, 150]);
   });
 
+  it("extends the last tick past the top of the data", () => {
+    expect(niceTicks(0, 17.3, 6)).toEqual([0, 5, 10, 15, 20]);
+  });
+
   it("formats with a real minus sign", () => {
     expect(signed(-4.9)).toBe("−4.9");
     expect(fmt(3.0)).toBe("3");
