@@ -13,7 +13,9 @@
     "render": "tsx scripts/render.ts",
     "stills": "tsx scripts/render.ts --stills",
     "showreel": "tsx scripts/showreel.ts",
-    "site": "tsx scripts/build-site.ts"
+    "site": "tsx scripts/build-site.ts",
+    "sfx:fetch": "tsx scripts/fetch-sfx-sources.ts",
+    "sfx:prepare": "tsx scripts/prepare-sfx.ts"
   },
   "dependencies": {
     "@remotion/cli": "4.0.484",

@@ -1,7 +1,7 @@
 // Anatomy of a Shirt: a button-down drawn as a fashion flat, taken apart into
 // its pattern pieces, measured, sewn back together and recut in four cloths.
 import React from "react";
-import { Bed, During, EndFade, Sfx, Stage, palettes } from "../../kit";
+import { Bed, During, EndFade, Sfx, SfxRun, Stage, palettes } from "../../kit";
 import { Garment, buttonTimes, landingTime } from "./Garment";
 import {
   ConstructionPanel,
@@ -42,44 +42,37 @@ export const ShirtAnatomy: React.FC = () => (
   </Stage>
 );
 
-/** Stitching sounds like a machine: a quick run of soft ticks while the needle moves. */
-const STITCH_TICKS = 6;
-
+// Pencil for the drawing, paper for the pattern pieces, and the sewing machine
+// from Work With Sounds on every seam.
 const Soundtrack: React.FC = () => (
   <>
     <Bed name="pulse" volume={0.17} fadeIn={0.8} fadeOut={2} />
-    <Sfx at={T.title + 0.2} name="swish" volume={0.25} />
-    <Sfx at={T.draw} name="shimmer" volume={0.12} />
-    <Sfx at={T.fill} name="swish" volume={0.3} />
-    {buttonTimes.map((at) => (
-      <Sfx key={`b${at}`} at={at} name="tick" volume={0.22} />
+    <Sfx at={T.title + 0.2} name="cloth" />
+    <SfxRun at={T.draw} name="pencil" count={4} step={0.6} gain={0.8} />
+    <Sfx at={T.fill} name="cloth" take={1} />
+    {buttonTimes.map((at, i) => (
+      <Sfx key={`b${at}`} at={at} name="click" take={i} gain={0.7} />
     ))}
-    <Sfx at={T.explode} name="whoosh" volume={0.45} />
-    {PIECES.map((p) => (
-      <Sfx key={`l${p.id}`} at={landingTime(p)} name="click" volume={0.16} />
+    <Sfx at={T.explode} name="flip" />
+    <Sfx at={T.explode + 0.1} name="rise" gain={0.8} />
+    {PIECES.map((p, i) => (
+      <Sfx key={`l${p.id}`} at={landingTime(p)} name="place" take={i} gain={0.6} />
     ))}
     {[0, 1, 2, 3].map((i) => (
-      <Sfx key={`m${i}`} at={T.measure + i * 0.75} name="tick" volume={0.3} />
+      <Sfx key={`m${i}`} at={T.measure + i * 0.75} name="pencil" take={i + 2} />
     ))}
-    <Sfx at={T.allowance} name="shimmer" volume={0.12} />
-    <Sfx at={T.gather + 0.1} name="swish" volume={0.3} />
-    {STEPS.map((s) => (
+    <Sfx at={T.allowance} name="pencil" take={5} />
+    <Sfx at={T.gather + 0.1} name="flip" take={1} />
+    {STEPS.map((s, i) => (
       <React.Fragment key={s.id}>
-        <Sfx at={s.at} name="click" volume={0.28} />
-        {Array.from({ length: STITCH_TICKS }, (_, i) => (
-          <Sfx
-            key={i}
-            at={s.at + STITCH.delay + (i * STITCH.dur) / STITCH_TICKS}
-            name="type"
-            volume={0.14}
-          />
-        ))}
+        <Sfx at={s.at} name="latch" take={i} gain={0.6} />
+        <Sfx at={s.at + STITCH.delay} name="sewing" take={i} dur={STITCH.dur} />
       </React.Fragment>
     ))}
-    <Sfx at={T.complete} name="thump" volume={0.5} />
-    {SWAPS.slice(1).map((s) => (
-      <Sfx key={s.fabric} at={s.at} name="swish" volume={0.32} />
+    <Sfx at={T.complete} name="thud" />
+    {SWAPS.slice(1).map((s, i) => (
+      <Sfx key={s.fabric} at={s.at} name="cloth" take={i + 2} />
     ))}
-    <Sfx at={T.end + 0.9} name="chime" volume={0.26} />
+    <Sfx at={T.end + 0.9} name="glass" />
   </>
 );

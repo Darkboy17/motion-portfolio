@@ -23,35 +23,37 @@ const LoopFade: React.FC<{ children: React.ReactNode }> = ({ children }) => {
 
 const evenDiagonals = [0, 2, 4, 6, 8, 10, 12, 14];
 
+// Wooden taps as the cells fill, the shuttle loom from Work With Sounds under the
+// weave (one clack a pick), and cloth for each colourway.
 const Soundtrack: React.FC = () => (
   <>
     <Bed name="pulse" volume={0.35} fadeIn={0.5} fadeOut={1} />
-    <Sfx at={T.title} name="swish" volume={0.22} />
-    <Sfx at={T.land} name="thump" volume={0.5} />
-    <Sfx at={T.grid} name="swish" volume={0.18} />
-    {evenDiagonals.map((d) => (
-      <Sfx key={d} at={fillAt(d)} name="tick" volume={0.32} />
+    <Sfx at={T.title} name="cloth" />
+    <Sfx at={T.land} name="thud" />
+    <Sfx at={T.grid} name="pencil" take={1} />
+    {evenDiagonals.map((d, i) => (
+      <Sfx key={d} at={fillAt(d)} name="peg" take={i} />
     ))}
-    <Sfx at={T.repeat} name="pop" volume={0.35} />
-    <Sfx at={T.tile3} name="click" volume={0.35} />
-    <Sfx at={T.tile5} name="click" volume={0.35} />
-    <Sfx at={T.field} name="whoosh" volume={0.4} />
-    <Sfx at={T.weave} name="whoosh" volume={0.3} rate={0.85} />
-    {[0, 4, 8, 12].map((col) => (
-      <Sfx key={col} at={weave.warpAt(col)} name="tick" volume={0.22} />
+    <Sfx at={T.repeat} name="pencil" take={2} gain={0.8} />
+    <Sfx at={T.tile3} name="place" />
+    <Sfx at={T.tile5} name="place" take={1} />
+    <Sfx at={T.field} name="rise" />
+    <Sfx at={T.weave} name="loom" dur={T.relaxEnd - T.weave} gain={0.8} />
+    {[0, 4, 8, 12].map((col, i) => (
+      <Sfx key={col} at={weave.warpAt(col)} name="peg" take={i + 1} gain={0.8} />
     ))}
-    {[0, 2, 4, 6, 8, 10, 12, 14].map((row) => (
-      <Sfx key={row} at={weave.weftAt(row)} name="swish" volume={0.12} rate={1.2} />
+    {[0, 2, 4, 6, 8, 10, 12, 14].map((row, i) => (
+      <Sfx key={row} at={weave.weftAt(row)} name="clack" take={i} gain={0.7} />
     ))}
-    <Sfx at={T.twill} name="pop" volume={0.3} />
-    <Sfx at={T.relaxEnd} name="thump" volume={0.28} />
-    <Sfx at={T.colour} name="whoosh" volume={0.32} />
-    <Sfx at={T.ways[0]} name="click" volume={0.3} />
-    {T.ways.slice(1).map((at) => (
-      <Sfx key={at} at={at} name="swish" volume={0.36} />
+    <Sfx at={T.twill} name="pencil" take={3} />
+    <Sfx at={T.relaxEnd} name="bump" />
+    <Sfx at={T.colour} name="cloth" take={1} />
+    <Sfx at={T.ways[0]} name="click" />
+    {T.ways.slice(1).map((at, i) => (
+      <Sfx key={at} at={at} name="cloth" take={i + 2} />
     ))}
-    <Sfx at={T.end} name="whoosh" volume={0.3} />
-    <Sfx at={T.endTitle} name="shimmer" volume={0.35} />
+    <Sfx at={T.end} name="fall" />
+    <Sfx at={T.endTitle} name="glass" />
   </>
 );
 

@@ -12,19 +12,31 @@ All three are loaded at render time through `@remotion/google-fonts` (see `src/k
 | Fraunces | Editorial display type in the fashion pieces | Google Fonts | SIL Open Font License 1.1 |
 | JetBrains Mono | Code blocks, HUD text | Google Fonts | SIL Open Font License 1.1 |
 
-## Sound
+## Sound effects
 
-Every sound is synthesized by `scripts/make-sfx.ts` from seeded noise and oscillators. Nothing is sampled or downloaded, so all of it is original work under this repository's licence. Run `npm run assets` to rebuild them.
+Every sound effect is a real recording. `scripts/fetch-sfx-sources.ts` downloads the originals into `sfx-sources/` (not committed), and `scripts/prepare-sfx.ts` cuts them into `public/sfx/<slot>-<take>.ogg`: each take starts on its transient, gets a short fade so no cut clicks, and is levelled to the same loudness. The slots, their takes and their mix levels are listed in `src/kit/sfx-manifest.json`. These edits (cutting, fading, levelling) are the only changes made to the recordings.
 
-| File | What it is |
-| --- | --- |
-| `public/sfx/whoosh.wav`, `swish.wav` | Band-passed noise sweeps for transitions |
-| `public/sfx/click.wav`, `tick.wav`, `type.wav`, `pop.wav` | Short UI hits |
-| `public/sfx/thump.wav` | A low impact (the ball landing) |
-| `public/sfx/chime.wav`, `shimmer.wav` | Bell partials through a small reverb, for correct answers and reveals |
-| `public/sfx/error.wav` | Two soft low tones, for the bugs and wrong answers |
-| `public/sfx/pad.wav` | A 24-second seamless chord pad, the explainers' music bed |
-| `public/sfx/pulse.wav` | A 120 BPM beat (15 frames a beat at 30 fps), the fashion pieces' music bed |
+| Slots | Source | Author | Licence |
+| --- | --- | --- | --- |
+| `tick` `click` `select` `toggle` `confirm` `error` `glitch` `scratch` `rise` `fall` `drop` `pluck` `glass` | [Interface Sounds](https://kenney.nl/assets/interface-sounds) | Kenney | CC0 1.0 |
+| `cloth` `flip` `place` `leather` `latch` `slice` | [RPG Audio](https://kenney.nl/assets/rpg-audio) | Kenney | CC0 1.0 |
+| `thud` `bump` `wood` `peg` `plank` `bell` `punch` | [Impact Sounds](https://kenney.nl/assets/impact-sounds) | Kenney | CC0 1.0 |
+| `laser` `hit` `boom` `thruster` `computer` | [Sci-fi Sounds](https://kenney.nl/assets/sci-fi-sounds) | Kenney | CC0 1.0 |
+| `chalk` | [264944 chalk-on-chalkboard.wav](https://commons.wikimedia.org/wiki/File:264944_chalk-on-chalkboard.wav) | fattirewhitey | CC0 1.0 |
+| `pencil` | [Pencil scratchings.ogg](https://commons.wikimedia.org/wiki/File:Pencil_scratchings.ogg) | gypsygirl | Public domain |
+| `sleigh` | [Sleigh bells.wav](https://commons.wikimedia.org/wiki/File:Sleigh_bells.wav) | The Midnite Wolf | CC0 1.0 |
+| `jingle` | [Soothing jingling little bells ambience.ogg](https://commons.wikimedia.org/wiki/File:Soothing_jingling_little_bells_ambience.ogg) | stephan | Public domain |
+| `typing` | [Typing - Model M 1986.ogg](https://commons.wikimedia.org/wiki/File:Typing_-_Model_M_1986.ogg) | Raymangold22 | CC0 1.0 |
+| `sewing` | [WWS SewingMachine.ogg](https://commons.wikimedia.org/wiki/File:WWS_SewingMachine.ogg) | Work With Sounds / Werstas | [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/) |
+| `loom` `clack` | [WWS Narrowshuttleloom.ogg](https://commons.wikimedia.org/wiki/File:WWS_Narrowshuttleloom.ogg) | Work With Sounds / Museum of Municipal Engineering | [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/) |
+| `engineStart` | [WWS FSRTarpan239Dvanstarting.ogg](https://commons.wikimedia.org/wiki/File:WWS_FSRTarpan239Dvanstarting.ogg) | Work With Sounds / Museum of Municipal Engineering | [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/) |
+| `engine` | [WWS FSRTarpan239Dvandriving.ogg](https://commons.wikimedia.org/wiki/File:WWS_FSRTarpan239Dvandriving.ogg) | Work With Sounds / Museum of Municipal Engineering | [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/) |
+
+The CC BY 4.0 recordings need attribution, which this table, the README and the portfolio page give.
+
+## Music
+
+`public/sfx/pad.wav` (the explainers' bed) and `public/sfx/pulse.wav` (the fashion pieces' 120 BPM bed) are synthesized by `scripts/make-sfx.ts` as placeholders, original work under this repository's licence. They will be replaced by licensed music; each track gets a row here with its source and licence.
 
 ## Lottie
 

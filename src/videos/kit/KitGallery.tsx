@@ -252,11 +252,13 @@ export const KitGallery: React.FC = () => {
           </Tile>
         </div>
       </AbsoluteFill>
-      <Sfx at={0.3} name="whoosh" volume={0.35} />
-      {[0.6, 0.72, 0.84, 0.96, 1.08, 1.2, 1.32, 1.44].map((s) => (
-        <Sfx key={s} at={s} name="tick" volume={0.25} />
+      <Sfx at={0.3} name="rise" />
+      {[0.6, 0.72, 0.84, 0.96, 1.08, 1.2, 1.32, 1.44].map((s, i) => (
+        <Sfx key={s} at={s} name="tick" take={i} />
       ))}
-      <Sfx at={2.6} name="pop" volume={0.3} />
+      <Sfx at={1.3} name="typing" dur={1.4} gain={0.8} />
+      <Sfx at={1.5} name="pencil" take={2} />
+      <Sfx at={2.6} name="pluck" />
     </Stage>
   );
 };

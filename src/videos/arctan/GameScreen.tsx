@@ -340,6 +340,18 @@ const missileFrom = (target: Vec) => {
   return { from: { x: Math.cos(a) * BARREL, y: Math.sin(a) * BARREL }, heading: a + Math.PI * 0.6 };
 };
 
+/** Every missile's whole flight, from launch until it hits or the recap starts. */
+export const missileFlights = () =>
+  LAUNCHES.map((launch) =>
+    simulateMissile({
+      ...missileFrom(targetAt(launch)),
+      target: targetAt,
+      launch,
+      until: T.recap,
+      ...MISSILE,
+    }),
+  );
+
 const Missiles: React.FC<{ flights: ReturnType<typeof simulateMissile>[] }> = ({ flights }) => {
   const frame = useCurrentFrame();
   const { fps } = useVideoConfig();
@@ -447,19 +459,7 @@ export const GameScreen: React.FC = () => {
     tween(frame, [sec(T.atan2 + 4.6), sec(T.atan2 + 5.2)], [0, 1], ease.out) *
     tween(frame, [sec(T.uses - 0.4), sec(T.uses)], [1, 0], ease.in);
 
-  const flights = useMemo(
-    () =>
-      LAUNCHES.map((launch) => {
-        return simulateMissile({
-          ...missileFrom(targetAt(launch)),
-          target: targetAt,
-          launch,
-          until: T.recap,
-          ...MISSILE,
-        });
-      }),
-    [],
-  );
+  const flights = useMemo(missileFlights, []);
   const hits = [
     ...SHOTS.map((s) => ({ at: s + SHOT_FLIGHT, p: targetAt(s + SHOT_FLIGHT) })),
     ...flights.filter((f) => f.hitAt !== null).map((f) => ({ at: f.hitAt as number, p: f.pos })),

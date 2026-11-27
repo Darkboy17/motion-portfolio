@@ -1,5 +1,7 @@
-// Synthesizes the sound kit into public/sfx as 16-bit mono WAVs.
-// Deterministic (seeded noise), no downloads, so every sound is original work.
+// Synthesizes the two placeholder music beds into public/sfx as 16-bit mono WAVs:
+// a chord pad for the explainers and a 120 BPM pulse for the fashion pieces.
+// Sound effects are real recordings now (see prepare-sfx.ts); these beds stay
+// until licensed music replaces them. Deterministic, so CI can rebuild them.
 //   npx tsx scripts/make-sfx.ts
 import { mkdirSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
@@ -59,35 +61,6 @@ const noise = (seconds: number, seed: number) => {
   return buf(seconds).map(() => r() * 2 - 1);
 };
 
-/** Small Schroeder reverb: parallel combs into an all-pass. */
-const reverb = (x: Float32Array, mix = 0.25, tail = 1.2) => {
-  const out = new Float32Array(x.length + Math.ceil(tail * SR));
-  out.set(x);
-  const wet = new Float32Array(out.length);
-  for (const [d, g] of [
-    [1557, 0.82],
-    [1617, 0.8],
-    [1491, 0.81],
-    [1422, 0.79],
-  ] as const) {
-    const line = new Float32Array(d);
-    for (let i = 0; i < out.length; i++) {
-      const j = i % d;
-      const v = line[j];
-      line[j] = out[i] + v * g;
-      wet[i] += v * 0.25;
-    }
-  }
-  const ap = new Float32Array(225);
-  for (let i = 0; i < wet.length; i++) {
-    const j = i % 225;
-    const v = ap[j];
-    ap[j] = wet[i] + v * 0.5;
-    wet[i] = v - wet[i] * 0.5;
-  }
-  return out.map((v, i) => v * (1 - mix) + wet[i] * mix);
-};
-
 const normalize = (x: Float32Array, peak = 0.89) => {
   const m = x.reduce((a, v) => Math.max(a, Math.abs(v)), 0) || 1;
   return x.map((v) => (v / m) * peak);
@@ -124,23 +97,6 @@ const writeWav = (name: string, data: Float32Array) => {
 const env = (t: number, attack: number, decay: number) =>
   t < attack ? t / attack : Math.exp(-(t - attack) / decay);
 
-// ---------- one-shots ----------
-
-const whoosh = (len: number, lo: number, hi: number, seed: number) => {
-  const n = noise(len, seed);
-  const peakAt = len * 0.42;
-  const f = (t: number) => lo + (hi - lo) * Math.sin(Math.PI * Math.min(1, t / len)) ** 1.5;
-  const b = bandpass(n, f, 1.4);
-  return normalize(
-    b.map((v, i) => {
-      const t = i / SR;
-      const a = t < peakAt ? (t / peakAt) ** 2 : Math.exp(-(t - peakAt) / (len * 0.18));
-      return v * a;
-    }),
-    0.7,
-  );
-};
-
 const tone = (len: number, f: (t: number) => number, decay: number, attack = 0.002) => {
   let ph = 0;
   return buf(len).map((_, i) => {
@@ -155,72 +111,6 @@ const mix = (...parts: [Float32Array, number][]) => {
   const out = new Float32Array(len);
   for (const [p, g] of parts) p.forEach((v, i) => (out[i] += v * g));
   return out;
-};
-
-const sounds: Record<string, () => Float32Array> = {
-  whoosh: () => whoosh(0.55, 350, 2600, 11),
-  swish: () => whoosh(0.28, 900, 5200, 12),
-  click: () =>
-    normalize(
-      mix(
-        [tone(0.06, () => 2900, 0.009), 0.8],
-        [highpass(noise(0.06, 3), 3000).map((v, i) => v * env(i / SR, 0.0005, 0.004)), 0.6],
-      ),
-      0.55,
-    ),
-  tick: () =>
-    normalize(
-      tone(0.05, () => 1750, 0.008),
-      0.32,
-    ),
-  type: () =>
-    normalize(
-      bandpass(noise(0.04, 5), () => 3200, 1.1).map((v, i) => v * env(i / SR, 0.0004, 0.006)),
-      0.35,
-    ),
-  pop: () =>
-    normalize(
-      tone(0.18, (t) => 720 * Math.exp(-t * 14) + 230, 0.05, 0.001),
-      0.6,
-    ),
-  thump: () =>
-    normalize(
-      mix(
-        [tone(0.5, (t) => 42 + 75 * Math.exp(-t * 30), 0.16, 0.001), 1],
-        [lowpass(noise(0.5, 7), 900).map((v, i) => v * env(i / SR, 0.0005, 0.02)), 0.5],
-      ),
-      0.85,
-    ),
-  chime: () => {
-    const partial = (f: number, d: number) => tone(1.4, () => f, d, 0.004);
-    const bell = mix(
-      [partial(1046.5, 0.5), 1],
-      [partial(1568, 0.35), 0.5],
-      [partial(2093, 0.22), 0.3],
-      [partial(3136, 0.12), 0.15],
-    );
-    return normalize(reverb(bell, 0.3, 1.2), 0.5);
-  },
-  error: () => {
-    const square = (f: number, start: number) =>
-      buf(0.5).map((_, i) => {
-        const t = i / SR - start;
-        if (t < 0) return 0;
-        return Math.sign(Math.sin(TAU * f * t)) * env(t, 0.003, 0.07);
-      });
-    return normalize(lowpass(mix([square(233, 0), 1], [square(196, 0.13), 1]), 1400), 0.42);
-  },
-  shimmer: () => {
-    const notes = [1046.5, 1318.5, 1568, 2093, 2637];
-    const parts = notes.map((f, k): [Float32Array, number] => {
-      const shifted = buf(1.1);
-      const t0 = Math.round(k * 0.07 * SR);
-      const tn = tone(1.1 - k * 0.07, () => f, 0.25, 0.003);
-      shifted.set(tn.subarray(0, shifted.length - t0), t0);
-      return [shifted, 1 - k * 0.12];
-    });
-    return normalize(reverb(mix(...parts), 0.35, 1.0), 0.42);
-  },
 };
 
 // ---------- beds ----------
@@ -269,7 +159,8 @@ const pulse = () => {
   const beat = 60 / bpm;
   const bars = 16;
   const total = bars * 4 * beat;
-  const out = buf(total + 1);
+  // Exactly 16 bars, so the bed loops without a gap.
+  const out = buf(total);
   const add = (src: Float32Array, at: number, gain: number) => {
     const o = Math.round(at * SR);
     for (let i = 0; i < src.length && o + i < out.length; i++) out[o + i] += src[i] * gain;
@@ -347,6 +238,5 @@ const pulse = () => {
 };
 
 mkdirSync(OUT, { recursive: true });
-for (const [name, make] of Object.entries(sounds)) writeWav(name, tailFade(make()));
 writeWav("pad", pad());
 writeWav("pulse", pulse());

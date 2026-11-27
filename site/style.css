@@ -477,6 +477,13 @@ pre.code .n {
   margin: 0 0 6px;
 }
 
+.site-foot .credits {
+  margin-top: 28px;
+  max-width: var(--measure);
+  font-size: 14px;
+  color: var(--ink-mute);
+}
+
 @media (max-width: 600px) {
   .site-head {
     flex-direction: column;

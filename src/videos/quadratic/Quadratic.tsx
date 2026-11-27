@@ -8,6 +8,7 @@ import {
   EndFade,
   HookTitle,
   Sfx,
+  SfxRun,
   Stage,
   palettes,
   useSec,
@@ -66,27 +67,57 @@ export const Quadratic: React.FC<QuadraticProps> = (props) => {
   );
 };
 
+// Equations are written in chalk, lines on the graph are drawn in pencil, and
+// the ball is a real soft thud with a smaller second bounce.
 const Audio: React.FC<{ m: ReturnType<typeof buildModel> }> = ({ m }) => (
   <>
     <Bed name="pad" volume={0.16} />
-    <Sfx at={0.35} name="whoosh" volume={0.3} />
-    <Sfx at={T.launch} name="pop" volume={0.45} />
-    <Sfx at={T.launch + m.landing} name="thump" volume={0.5} />
-    {[0.5, 0.64, 0.78, 0.92].map((d) => (
-      <Sfx key={d} at={T.model + d} name="tick" volume={0.3} />
+    <Sfx at={0.35} name="rise" />
+    <Sfx at={T.launch} name="cloth" gain={1.2} />
+    <Sfx at={T.launch + m.landing} name="thud" />
+    <Sfx at={T.launch + m.landing + 0.24} name="bump" gain={0.6} />
+    <Sfx at={T.model + 0.45} name="pencil" take={0} />
+    <SfxRun at={T.model + 0.5} name="chalk" count={4} />
+    {[3.6, 4.6, 5.6].map((d, i) => (
+      <Sfx key={d} at={T.model + d} name="select" take={i} />
     ))}
-    {[3.6, 4.6, 5.6].map((d) => (
-      <Sfx key={d} at={T.model + d} name="click" volume={0.25} />
-    ))}
-    <Sfx at={T.replay} name="pop" volume={0.35} />
-    <Sfx at={T.replay + m.landing} name="thump" volume={0.35} />
+    <Sfx at={T.model + 5.4} name="pencil" take={3} gain={0.7} />
+    <Sfx at={T.replay} name="cloth" take={2} />
+    <Sfx at={T.replay + m.landing} name="thud" take={3} gain={0.8} />
     {[T.land, T.peak, T.reach, T.recap].map((t) => (
-      <Sfx key={t} at={t + 0.1} name="swish" volume={0.3} />
+      <Sfx key={t} at={t + 0.05} name="fall" />
     ))}
-    <Sfx at={T.land + 10.4} name="chime" volume={0.4} />
-    <Sfx at={T.land + 14.4} name="error" volume={0.22} />
-    <Sfx at={T.peak + 6.6} name="pop" volume={0.4} />
-    <Sfx at={T.reach + 7.3} name={m.reaches ? "chime" : "error"} volume={0.25} />
-    <Sfx at={T.recap + 1.3} name="shimmer" volume={0.3} />
+    {/* Land: write the equation, read off a, b, c, solve, keep one root and strike the other */}
+    <SfxRun at={T.land + 2.9} name="chalk" count={5} />
+    {[6, 6.15, 6.3].map((d, i) => (
+      <Sfx key={d} at={T.land + d} name="click" take={i} />
+    ))}
+    <SfxRun at={T.land + 7.2} name="chalk" count={3} step={0.3} />
+    <SfxRun at={T.land + 9.3} name="chalk" count={2} step={0.6} />
+    <Sfx at={T.land + 10.4} name="confirm" />
+    <Sfx at={T.land + 13.4} name="pencil" take={4} />
+    <Sfx at={T.land + 14} name="drop" />
+    <Sfx at={T.land + 14.4} name="scratch" />
+    {/* Peak: the vertex formula, then guides to the top of the arc */}
+    <SfxRun at={T.peak + 3.1} name="chalk" count={3} step={1.15} />
+    <Sfx at={T.peak + 3} name="pencil" take={1} />
+    <Sfx at={T.peak + 6.4} name="pencil" take={2} />
+    <Sfx at={T.peak + 6.6} name="pluck" />
+    <Sfx at={T.peak + 6.7} name="drop" take={1} />
+    {/* Reach: the ledge, the equation and its discriminant, then the verdict */}
+    <Sfx at={T.reach + 1} name="pencil" take={5} />
+    <SfxRun at={T.reach + 3.4} name="chalk" count={3} step={0.6} />
+    <SfxRun at={T.reach + 5.8} name="chalk" count={3} step={0.65} />
+    <Sfx at={T.reach + 7.3} name={m.reaches ? "confirm" : "error"} />
+    <Sfx at={T.reach + 7.6} name="pencil" take={0} gain={0.7} />
+    <Sfx at={T.sweep + 0.6} name="rise" take={3} />
+    <Sfx at={T.sweep + 2.6} name="pluck" take={1} />
+    <Sfx at={T.sweep + 3.7} name="toggle" />
+    {/* Recap */}
+    {[1.3, 1.75, 2.2].map((d, i) => (
+      <Sfx key={d} at={T.recap + d} name="select" take={i + 1} />
+    ))}
+    <Sfx at={T.recap + 2.2} name="pencil" take={2} gain={0.7} />
+    <Sfx at={T.recap + 3.2} name="glass" />
   </>
 );

@@ -79,7 +79,7 @@ The repository needs three variables (`VM_HOST`, `VM_USER`, `SITE_DOMAIN`) and t
 
 ## Assets and licences
 
-Fonts are from Google Fonts (SIL Open Font License). Every sound is synthesized by `scripts/make-sfx.ts`, and every Lottie file is written by `scripts/make-lottie.ts`. Illustrations are SVG drawn in code. [ASSETS.md](ASSETS.md) lists each file with its source and licence, with a ready table for stock items (Envato Elements, LottieFiles) when they are used.
+Fonts are from Google Fonts (SIL Open Font License). Sound effects are real recordings: Kenney's CC0 sound packs and field recordings from Wikimedia Commons, including the sewing machine, shuttle loom and van from [Work With Sounds](https://commons.wikimedia.org/wiki/Commons:Work_With_Sounds) (CC BY 4.0). Every Lottie file is written by `scripts/make-lottie.ts`. Illustrations are SVG drawn in code. [ASSETS.md](ASSETS.md) lists each file with its source and licence, with a ready table for stock items (Envato Elements, LottieFiles) when they are used.
 
 ## Working on it
 
