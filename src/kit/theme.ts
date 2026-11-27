@@ -22,6 +22,14 @@ const lab = {
   redTint: "#FBE5E3",
   blue: "#3466D6",
   blueTint: "#E5ECFB",
+  // a dark "screen" surface for game and device mock-ups, with brighter accents that hold up on it
+  screen: "#111C16",
+  screenLine: "#22322A",
+  screenText: "#DDE8E1",
+  heroBright: "#3BD68A",
+  amberBright: "#FFBE3D",
+  redBright: "#FF6B5E",
+  blueBright: "#7FA6FF",
 } as const;
 
 /** Fashion palette: warm paper, deep ink, an oxblood hero and a fabric range. */

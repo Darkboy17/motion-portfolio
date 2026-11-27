@@ -203,6 +203,34 @@ export const Axes: React.FC<{
   );
 };
 
+/** Clips segment a-b to a box (Liang-Barsky). Returns null when it lies outside. */
+export const clipSegment = (a: Pt, b: Pt, box: Scale["box"]): [Pt, Pt] | null => {
+  const dx = b.x - a.x;
+  const dy = b.y - a.y;
+  let t0 = 0;
+  let t1 = 1;
+  const edges: [number, number][] = [
+    [-dx, a.x - box.left],
+    [dx, box.right - a.x],
+    [-dy, a.y - box.top],
+    [dy, box.bottom - a.y],
+  ];
+  for (const [p, q] of edges) {
+    if (p === 0) {
+      if (q < 0) return null;
+      continue;
+    }
+    const r = q / p;
+    if (p < 0) t0 = Math.max(t0, r);
+    else t1 = Math.min(t1, r);
+    if (t0 > t1) return null;
+  }
+  return [
+    { x: a.x + dx * t0, y: a.y + dy * t0 },
+    { x: a.x + dx * t1, y: a.y + dy * t1 },
+  ];
+};
+
 /** Builds an SVG path for y = f(x) between two x values. */
 export const fnPath = (
   g: Scale,

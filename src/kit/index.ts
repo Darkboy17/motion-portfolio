@@ -12,5 +12,6 @@ export * from "./Graph";
 export * from "./Eq";
 export * from "./CodeBlock";
 export * from "./Widgets";
+export * from "./Explainer";
 export * from "./Media";
 export * from "./math";
