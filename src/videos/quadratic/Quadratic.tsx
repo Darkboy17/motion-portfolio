@@ -1,10 +1,20 @@
 // Algebra explainer: one thrown ball, one quadratic, three questions.
 import React from "react";
 import { AbsoluteFill, Sequence } from "remotion";
-import { Bed, CaptionTrack, ChapterBar, EndFade, Sfx, Stage, palettes, useSec } from "../../kit";
+import {
+  Bed,
+  CaptionTrack,
+  ChapterBar,
+  EndFade,
+  HookTitle,
+  Sfx,
+  Stage,
+  palettes,
+  useSec,
+} from "../../kit";
 import { buildModel } from "./model";
 import type { QuadraticProps } from "./model";
-import { HookTitle, LandPanel, ModelPanel, PeakPanel, ReachPanel, RecapPanel } from "./Panels";
+import { LandPanel, ModelPanel, PeakPanel, ReachPanel, RecapPanel } from "./Panels";
 import { ThrowGraph } from "./ThrowGraph";
 import { T, chapters, cues } from "./timeline";
 
@@ -19,7 +29,12 @@ export const Quadratic: React.FC<QuadraticProps> = (props) => {
     <Stage grid>
       <ThrowGraph m={m} ledge={props.ledgeHeight} />
       <Sequence {...span(0, T.model)} name="Hook">
-        <HookTitle />
+        <HookTitle
+          kicker="Algebra · Quadratic equations"
+          headline="Every throw draws a *parabola.*"
+          sub="One equation says when it lands, how high it goes, and whether it can reach a ledge."
+          exitAt={T.model - 0.7}
+        />
       </Sequence>
       <Sequence {...span(T.model, T.land)} name="Model">
         <ModelPanel m={m} v0={props.launchSpeed} h0={props.startHeight} />
