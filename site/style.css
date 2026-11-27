@@ -63,10 +63,12 @@ a:hover {
   border-radius: 4px;
 }
 
+/* Side padding only, so sections keep their own vertical rhythm. */
 .wrap {
   max-width: var(--max);
   margin: 0 auto;
-  padding: 0 var(--gutter);
+  padding-left: var(--gutter);
+  padding-right: var(--gutter);
 }
 
 /* Header */
@@ -87,9 +89,14 @@ a:hover {
 
 .site-head nav {
   display: flex;
-  gap: 22px;
+  flex-wrap: wrap;
+  gap: 8px 22px;
   font-size: 16px;
   color: var(--ink-soft);
+}
+
+.site-head nav a {
+  white-space: nowrap;
 }
 
 /* Hero */
@@ -265,6 +272,7 @@ section {
 .facts {
   display: grid;
   grid-template-columns: auto 1fr;
+  align-content: start;
   gap: 4px 18px;
   margin: 0 0 16px;
   font-size: 15px;
@@ -467,6 +475,13 @@ pre.code .n {
 .site-foot p {
   color: var(--ink-soft);
   margin: 0 0 6px;
+}
+
+@media (max-width: 600px) {
+  .site-head {
+    flex-direction: column;
+    gap: 10px;
+  }
 }
 
 @media (max-width: 860px) {

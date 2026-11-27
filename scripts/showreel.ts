@@ -14,14 +14,21 @@ const ATELIER = "0xF3EDE4";
 
 export const CLIPS: Clip[] = [
   { slug: "arctan", start: 0.9, dur: 3.4, pad: LAB },
-  { slug: "shirt-anatomy", start: 7.5, dur: 3.2, pad: ATELIER },
+  { slug: "shirt-anatomy", start: 7, dur: 3.4, pad: ATELIER },
   { slug: "quadratic", start: 58.8, dur: 3.6, pad: LAB },
-  { slug: "houndstooth", start: 11, dur: 3.2, pad: ATELIER },
-  { slug: "derivative", start: 48.8, dur: 3.6, pad: LAB },
-  { slug: "festive-drop", start: 5, dur: 3.2, pad: ATELIER },
+  { slug: "houndstooth", start: 11.6, dur: 3.2, pad: ATELIER },
+  { slug: "derivative", start: 51.2, dur: 3.6, pad: LAB },
+  { slug: "festive-drop", start: 7.1, dur: 3.2, pad: ATELIER },
 ];
 
-const inputs = CLIPS.flatMap((c) => ["-ss", String(c.start), "-t", String(c.dur), "-i", join(OUT, "master", `${c.slug}.mp4`)]);
+const inputs = CLIPS.flatMap((c) => [
+  "-ss",
+  String(c.start),
+  "-t",
+  String(c.dur),
+  "-i",
+  join(OUT, "master", `${c.slug}.mp4`),
+]);
 
 const prep = CLIPS.map(
   (c, i) =>
@@ -35,7 +42,9 @@ let last = "v0";
 CLIPS.slice(1).forEach((c, k) => {
   const i = k + 1;
   const out = i === CLIPS.length - 1 ? "reel" : `x${i}`;
-  fades.push(`[${last}][v${i}]xfade=transition=fade:duration=${FADE}:offset=${(total - FADE).toFixed(3)}[${out}]`);
+  fades.push(
+    `[${last}][v${i}]xfade=transition=fade:duration=${FADE}:offset=${(total - FADE).toFixed(3)}[${out}]`,
+  );
   total += c.dur - FADE;
   last = out;
 });
@@ -64,7 +73,24 @@ const args = [
 ];
 const r = spawnSync("ffmpeg", args, { stdio: "inherit" });
 if (r.status !== 0) throw new Error("ffmpeg failed");
-spawnSync("ffmpeg", ["-y", "-v", "error", "-ss", "0.5", "-i", join(OUT, "showreel.mp4"), "-frames:v", "1", "-q:v", "3", join(OUT, "showreel.jpg")], {
-  stdio: "inherit",
-});
+spawnSync(
+  "ffmpeg",
+  [
+    "-y",
+    "-v",
+    "error",
+    "-ss",
+    "0.5",
+    "-i",
+    join(OUT, "showreel.mp4"),
+    "-frames:v",
+    "1",
+    "-q:v",
+    "3",
+    join(OUT, "showreel.jpg"),
+  ],
+  {
+    stdio: "inherit",
+  },
+);
 console.log(`out/showreel.mp4  ${total.toFixed(1)} s`);

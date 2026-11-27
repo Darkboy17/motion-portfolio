@@ -33,8 +33,8 @@ export const PIECES: Piece[] = [
     poster: 41,
     captions: { cues: arctanCues(), end: ARCTAN_SECONDS },
   },
-  { slug: "shirt-anatomy", id: "ShirtAnatomy", poster: 12 },
-  { slug: "houndstooth", id: "Houndstooth", poster: 9 },
-  { slug: "festive-drop", id: "FestiveDrop", poster: 6 },
+  { slug: "shirt-anatomy", id: "ShirtAnatomy", poster: 13.6 },
+  { slug: "houndstooth", id: "Houndstooth", poster: 14 },
+  { slug: "festive-drop", id: "FestiveDrop", poster: 9.2 },
   { slug: "kit-gallery", id: "KitGallery", poster: 10 },
 ];
