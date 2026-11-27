@@ -177,16 +177,14 @@ export const KitGallery: React.FC = () => {
             </svg>
           </Tile>
           <Tile name="CodeBlock" at={1.08} style={{ height: 300, background: c.panel }}>
-            <div style={{ transform: "scale(0.78)" }}>
-              <CodeBlock
-                code={"const angle = Math.atan2(dy, dx);\nturret.rotation = angle;"}
-                title="aim.ts"
-                at={1.3}
-                cps={34}
-                size={24}
-                focus={[{ line: 1, at: 4 }]}
-              />
-            </div>
+            <CodeBlock
+              code={"const a = Math.atan2(dy, dx);\nturret.rotation = a;"}
+              title="aim.ts"
+              at={1.3}
+              cps={30}
+              size={19}
+              focus={[{ line: 1, at: 4 }]}
+            />
           </Tile>
           <Tile name="Callout · DrawPath" at={1.2} style={{ height: 300 }}>
             <svg width={380} height={280}>

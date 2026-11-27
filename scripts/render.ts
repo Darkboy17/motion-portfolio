@@ -47,6 +47,7 @@ export const PIECES: Piece[] = [
   { slug: "shirt-anatomy", id: "ShirtAnatomy", poster: 12 },
   { slug: "houndstooth", id: "Houndstooth", poster: 9 },
   { slug: "festive-drop", id: "FestiveDrop", poster: 6 },
+  { slug: "kit-gallery", id: "KitGallery", poster: 10 },
 ];
 
 const ROOT = join(import.meta.dirname, "..");
