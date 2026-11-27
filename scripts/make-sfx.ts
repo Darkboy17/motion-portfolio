@@ -159,7 +159,8 @@ const pulse = () => {
   const beat = 60 / bpm;
   const bars = 16;
   const total = bars * 4 * beat;
-  const out = buf(total + 1);
+  // Exactly 16 bars, so the bed loops without a gap.
+  const out = buf(total);
   const add = (src: Float32Array, at: number, gain: number) => {
     const o = Math.round(at * SR);
     for (let i = 0; i < src.length && o + i < out.length; i++) out[o + i] += src[i] * gain;
