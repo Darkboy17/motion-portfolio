@@ -1,0 +1,135 @@
+# Pull requests: lint, typecheck, tests, the asset generators and one still per piece.
+# main: the same checks, then render what changed, build the web image, and
+# deploy it to the Oracle VM.
+name: CI/CD
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+env:
+  IMAGE: ghcr.io/darkboy17/motion-portfolio
+
+jobs:
+  check:
+    name: Check
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - name: Lint and typecheck
+        run: npm run lint
+      - name: Unit tests
+        run: npm test
+      - name: Regenerate the synthesized sounds and Lottie files
+        run: npm run assets
+      - name: Install Chrome for Remotion
+        run: npx remotion browser ensure
+      - name: Render one still per piece
+        run: npm run stills
+        env:
+          REMOTION_CONCURRENCY: 4
+      - uses: actions/upload-artifact@v7
+        with:
+          name: stills
+          path: out/stills/*.png
+
+  build:
+    name: Render and build the image
+    needs: check
+    if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    permissions:
+      contents: read
+      packages: write
+    env:
+      REMOTION_CONCURRENCY: 4
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 22
+          cache: npm
+      - name: Install ffmpeg
+        run: sudo apt-get update && sudo apt-get install -y --no-install-recommends ffmpeg
+      - run: npm ci
+      - run: npx remotion browser ensure
+      # Renders are cached between runs; render.ts --changed only re-renders a
+      # piece when a file it depends on has changed.
+      - name: Restore earlier renders
+        uses: actions/cache/restore@v6
+        with:
+          path: out
+          key: renders-${{ github.sha }}
+          restore-keys: renders-
+      - name: Render the pieces whose inputs changed
+        run: npm run render -- --changed
+      - name: Save renders
+        uses: actions/cache/save@v6
+        continue-on-error: true
+        with:
+          path: out
+          key: renders-${{ hashFiles('out/hashes.json') }}
+      - name: Cut the showreel and build the page
+        run: npm run showreel && npm run site
+      - uses: docker/setup-buildx-action@v4
+      - uses: docker/login-action@v4
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - uses: docker/build-push-action@v7
+        with:
+          context: .
+          target: web-prebuilt
+          push: true
+          tags: |
+            ${{ env.IMAGE }}:${{ github.sha }}
+            ${{ env.IMAGE }}:latest
+          labels: |
+            org.opencontainers.image.source=${{ github.server_url }}/${{ github.repository }}
+            org.opencontainers.image.revision=${{ github.sha }}
+
+  deploy:
+    name: Deploy to the Oracle VM
+    needs: build
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    environment:
+      name: production
+      url: http://${{ vars.VM_HOST }}
+    permissions:
+      contents: read
+      packages: read
+    steps:
+      - uses: actions/checkout@v7
+      - name: Set up SSH
+        env:
+          SSH_KEY: ${{ secrets.VM_SSH_KEY }}
+          KNOWN_HOSTS: ${{ secrets.VM_KNOWN_HOSTS }}
+        run: |
+          install -m 700 -d ~/.ssh
+          printf '%s\n' "$SSH_KEY" > ~/.ssh/deploy_key
+          chmod 600 ~/.ssh/deploy_key
+          printf '%s\n' "$KNOWN_HOSTS" > ~/.ssh/known_hosts
+      - name: Pull the image and restart the container
+        env:
+          TARGET: ${{ vars.VM_USER }}@${{ vars.VM_HOST }}
+          TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          ssh -i ~/.ssh/deploy_key "$TARGET" "docker login ghcr.io -u '${{ github.actor }}' --password-stdin" <<< "$TOKEN"
+          ssh -i ~/.ssh/deploy_key "$TARGET" "IMAGE=$IMAGE TAG=${{ github.sha }} bash -s" < deploy/remote-deploy.sh
+      - name: Check the page from outside
+        run: curl -fsS --retry 10 --retry-delay 3 --retry-all-errors "http://${{ vars.VM_HOST }}/healthz"
