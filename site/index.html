@@ -1,0 +1,303 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{{NAME}}: motion graphics in code</title>
+    <meta name="description" content="2D motion graphics and animated explainers, built in code with Remotion, React and TypeScript." />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500&family=JetBrains+Mono:wght@400&family=Manrope:wght@400;500;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <header class="wrap site-head">
+      <a class="name" href="#">{{NAME}}</a>
+      <nav aria-label="Sections">
+        <a href="#explainers">Explainers</a>
+        <a href="#fashion">Fashion</a>
+        <a href="#kit">How it's built</a>
+        <a href="#contact">Contact</a>
+      </nav>
+    </header>
+
+    <main>
+      <div class="wrap hero">
+        <h1>I make 2D motion graphics and explainers in code.</h1>
+        <p class="lede">
+          React, TypeScript and Remotion. The numbers on screen are calculated, each piece re-renders from its inputs, and
+          everything lives in Git.
+        </p>
+        <div class="reel">
+          <video id="reel" src="media/showreel.mp4" poster="media/showreel.jpg" muted loop playsinline preload="auto" aria-label="Showreel: clips from the six pieces below"></video>
+        </div>
+        <div class="timecode" aria-hidden="true">
+          <span id="frame">frame 0000</span>
+          <span class="track"><span class="bar" id="bar"></span></span>
+          <span id="secs">0.00 s</span>
+          <button type="button" id="reel-toggle">Play</button>
+        </div>
+        <ul class="how">
+          <li>
+            <h2>One idea per chapter</h2>
+            <p>Explainers built like course modules: a chapter bar, captions that carry the narration, and a recap.</p>
+          </li>
+          <li>
+            <h2>One system</h2>
+            <p>Every piece draws from the same kit of tokens and components, so a new video starts consistent.</p>
+          </li>
+          <li>
+            <h2>Reviewable</h2>
+            <p>Small commits, tested maths, and a licence on record for every font, sound and animation.</p>
+          </li>
+        </ul>
+      </div>
+
+      <section id="explainers" class="wrap">
+        <div class="section-head">
+          <h2>Animated explainers</h2>
+          <p>
+            Three technical explainers, 74 to 83 seconds each, on real-world uses of algebra, calculus and trigonometry.
+            Each one answers a single question and shows how something works rather than selling it.
+          </p>
+        </div>
+
+        <article class="piece">
+          <video src="media/quadratic.mp4" poster="media/quadratic.jpg" controls preload="none" playsinline></video>
+          <div>
+            <h3>Where does a thrown ball land?</h3>
+            <p class="question">A quadratic equation answers three questions about one throw: when it lands, how high it goes, and whether it can reach a 15 m ledge.</p>
+            <ol aria-label="Chapters">
+              <li>Model</li>
+              <li>Land</li>
+              <li>Peak</li>
+              <li>Reach</li>
+            </ol>
+            <ul class="notes">
+              <li>The throw becomes the graph: the ground turns into the time axis and the ball's path into the curve.</li>
+              <li>Every number comes from three inputs. Change the launch speed in Remotion Studio and the whole video works itself out again.</li>
+              <li>The discriminant is a line sliding down the graph: no crossing, one touch, then two crossings as D changes sign.</li>
+            </ul>
+            <dl class="facts">
+              <dt>Length</dt>
+              <dd>{{DURATION:quadratic}}, 1920 × 1080</dd>
+              <dt>Source</dt>
+              <dd><a href="{{REPO}}/tree/main/src/videos/quadratic">src/videos/quadratic</a></dd>
+            </dl>
+            <details>
+              <summary>Read the script</summary>
+              {{TRANSCRIPT:quadratic}}
+            </details>
+          </div>
+        </article>
+
+        <article class="piece">
+          <video src="media/derivative.mp4" poster="media/derivative.jpg" controls preload="none" playsinline></video>
+          <div>
+            <h3>What does a speedometer measure?</h3>
+            <p class="question">Speed is distance over time, and an instant has no time in it. The derivative resolves that, and a car makes it visible.</p>
+            <ol aria-label="Chapters">
+              <li>Distance</li>
+              <li>Average</li>
+              <li>Instant</li>
+              <li>Tangent</li>
+              <li>Rule</li>
+            </ol>
+            <ul class="notes">
+              <li>The road runs beside the distance axis, so the car's place on the road is the height of the graph.</li>
+              <li>The secant's gap shrinks from 4 s to 0.01 s while a table records the average settling on 14.4 m/s.</li>
+              <li>A tangent slides along the curve and drives a live speedometer and the speed graph at the same time.</li>
+            </ul>
+            <dl class="facts">
+              <dt>Length</dt>
+              <dd>{{DURATION:derivative}}, 1920 × 1080</dd>
+              <dt>Source</dt>
+              <dd><a href="{{REPO}}/tree/main/src/videos/derivative">src/videos/derivative</a></dd>
+            </dl>
+            <details>
+              <summary>Read the script</summary>
+              {{TRANSCRIPT:derivative}}
+            </details>
+          </div>
+        </article>
+
+        <article class="piece">
+          <video src="media/arctan.mp4" poster="media/arctan.jpg" controls preload="none" playsinline></video>
+          <div>
+            <h3>How does a game turret aim?</h3>
+            <p class="question">Two positions in, one angle out. Plain arctan gets it right on one side of the screen and backwards on the other; atan2 fixes it.</p>
+            <ol aria-label="Chapters">
+              <li>Triangle</li>
+              <li>Track</li>
+              <li>The bug</li>
+              <li>atan2</li>
+              <li>In games</li>
+            </ol>
+            <ul class="notes">
+              <li>The bug is shown, not described: when the target crosses to the left, the turret turns red and aims the opposite way.</li>
+              <li>The code on screen changes from <code>Math.atan</code> to <code>Math.atan2</code>, the way a developer would meet the fix.</li>
+              <li>The homing missiles are a real steering simulation: atan2 plus a turn-rate limit, deterministic so every frame renders the same.</li>
+            </ul>
+            <dl class="facts">
+              <dt>Length</dt>
+              <dd>{{DURATION:arctan}}, 1920 × 1080</dd>
+              <dt>Source</dt>
+              <dd><a href="{{REPO}}/tree/main/src/videos/arctan">src/videos/arctan</a></dd>
+            </dl>
+            <details>
+              <summary>Read the script</summary>
+              {{TRANSCRIPT:arctan}}
+            </details>
+          </div>
+        </article>
+      </section>
+
+      <section id="fashion" class="atelier">
+        <div class="wrap">
+          <div class="section-head">
+            <h2>Fashion in motion</h2>
+            <p>Three pieces in three formats, to show range: a technical flat taken apart, a textile study, and a social reel cut to the beat. Every garment, pattern and motif is drawn in code.</p>
+          </div>
+
+          <figure class="wide" style="margin: 0">
+            <video src="media/shirt-anatomy.mp4" poster="media/shirt-anatomy.jpg" controls preload="none" playsinline></video>
+            <figcaption class="caption">
+              <div>
+                <h3>Anatomy of a Shirt</h3>
+                <p>{{BLURB:shirt-anatomy}}</p>
+              </div>
+              <dl class="facts">
+                <dt>Length</dt>
+                <dd>{{DURATION:shirt-anatomy}}, 1920 × 1080</dd>
+                <dt>Source</dt>
+                <dd><a href="{{REPO}}/tree/main/src/videos/shirt-anatomy">src/videos/shirt-anatomy</a></dd>
+              </dl>
+            </figcaption>
+          </figure>
+
+          <div class="pair">
+            <figure>
+              <video class="square" src="media/houndstooth.mp4" poster="media/houndstooth.jpg" controls preload="none" playsinline></video>
+              <figcaption>
+                <h3>Houndstooth</h3>
+                <p>{{BLURB:houndstooth}}</p>
+                <dl class="facts">
+                  <dt>Length</dt>
+                  <dd>{{DURATION:houndstooth}}, 1080 × 1080</dd>
+                  <dt>Source</dt>
+                  <dd><a href="{{REPO}}/tree/main/src/videos/houndstooth">src/videos/houndstooth</a></dd>
+                </dl>
+              </figcaption>
+            </figure>
+            <figure>
+              <video class="tall" src="media/festive-drop.mp4" poster="media/festive-drop.jpg" controls preload="none" playsinline></video>
+              <figcaption>
+                <h3>The Festive Edit</h3>
+                <p>{{BLURB:festive-drop}}</p>
+                <dl class="facts">
+                  <dt>Length</dt>
+                  <dd>{{DURATION:festive-drop}}, 1080 × 1920</dd>
+                  <dt>Source</dt>
+                  <dd><a href="{{REPO}}/tree/main/src/videos/festive-drop">src/videos/festive-drop</a></dd>
+                </dl>
+              </figcaption>
+            </figure>
+          </div>
+        </div>
+      </section>
+
+      <section id="kit" class="wrap">
+        <div class="section-head">
+          <h2>How it's built</h2>
+          <p>
+            The six pieces share one kit: design tokens, motion helpers and a set of components for video. A new explainer
+            starts from parts that already look right together, and a change to the kit reaches every piece.
+          </p>
+        </div>
+        <div class="kit-grid">
+          <video src="media/kit-gallery.mp4" poster="media/kit-gallery.jpg" controls preload="none" playsinline></video>
+          <dl class="parts">
+            <dt>Motion</dt>
+            <dd>Eased, clamped, staggered entrances and quicker exits, all timed in seconds.</dd>
+            <dt>Text</dt>
+            <dd>Word-by-word reveals, and captions that also export as WebVTT.</dd>
+            <dt>Diagrams</dt>
+            <dd>SVG paths that draw themselves on, arrows, angles and labelled callouts.</dd>
+            <dt>Charts</dt>
+            <dd>Plots written in graph units, with axes, guides and tangents.</dd>
+            <dt>Maths</dt>
+            <dd>Equations built from spans, so one term can enter or light up on its own.</dd>
+            <dt>Code</dt>
+            <dd>Typed-in code with syntax colour and line focus.</dd>
+            <dt>Readouts</dt>
+            <dd>A gauge, counting numbers and a chapter bar for course modules.</dd>
+            <dt>Media</dt>
+            <dd>Sound placed on its frame, and Lottie files recoloured to the theme.</dd>
+          </dl>
+        </div>
+
+        <pre class="code" aria-label="Code excerpt from the quadratic explainer"><span class="c">// Beat sheet for the quadratic explainer, in seconds. Every animation and</span>
+<span class="c">// caption keys off these, so retiming a chapter moves everything in it.</span>
+<span class="k">export const</span> T = {
+  launch: <span class="n">1.3</span>, model: <span class="n">6</span>, replay: <span class="n">13.2</span>, land: <span class="n">17</span>,
+  peak: <span class="n">35</span>, reach: <span class="n">46.5</span>, sweep: <span class="n">57.4</span>, recap: <span class="n">64.5</span>, end: <span class="n">74</span>,
+} <span class="k">as const</span>;
+
+<span class="c">// Nothing on screen is typed in by hand: it is all derived from the props.</span>
+<span class="k">const</span> q = projectile(props.launchSpeed, props.startHeight);
+<span class="k">const</span> [before, landing] = solveQuadratic(q);
+<span class="k">const</span> peak = vertex(q);</pre>
+
+        <ul class="practices">
+          <li><strong>Tested maths</strong><span>Unit tests pin the values the explainers show: roots, secant slopes, atan2 quadrants and missile steering.</span></li>
+          <li><strong>One entry per piece</strong><span>Each video renders on its own, so work on one never breaks another.</span></li>
+          <li><strong>Licences on record</strong><span>Every font, sound and Lottie file is listed with its source and licence.</span></li>
+          <li><strong>Checked on every pull request</strong><span>Lint, typecheck, tests, and a rendered still from each piece.</span></li>
+        </ul>
+      </section>
+    </main>
+
+    <footer id="contact" class="wrap site-foot">
+      <h2>Get in touch</h2>
+      <p><a href="mailto:{{EMAIL}}">{{EMAIL}}</a></p>
+      <p><a href="{{GITHUB}}">{{GITHUB_LABEL}}</a></p>
+      <p>The source for this page and every video: <a href="{{REPO}}">{{REPO_LABEL}}</a></p>
+    </footer>
+
+    <script>
+      // Showreel frame counter. Plays on load unless the viewer prefers reduced motion.
+      (() => {
+        const v = document.getElementById("reel");
+        const frame = document.getElementById("frame");
+        const secs = document.getElementById("secs");
+        const bar = document.getElementById("bar");
+        const toggle = document.getElementById("reel-toggle");
+        const FPS = 30;
+        const draw = () => {
+          const t = v.currentTime || 0;
+          frame.textContent = `frame ${String(Math.floor(t * FPS)).padStart(4, "0")}`;
+          secs.textContent = `${t.toFixed(2)} s`;
+          bar.style.width = v.duration ? `${(t / v.duration) * 100}%` : "0";
+        };
+        const tick = () => {
+          draw();
+          if (!v.paused) requestAnimationFrame(tick);
+        };
+        v.addEventListener("play", () => {
+          toggle.textContent = "Pause";
+          requestAnimationFrame(tick);
+        });
+        v.addEventListener("pause", () => {
+          toggle.textContent = "Play";
+          draw();
+        });
+        toggle.addEventListener("click", () => (v.paused ? v.play() : v.pause()));
+        const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+        if (!reduce) v.play().catch(() => {});
+      })();
+    </script>
+  </body>
+</html>

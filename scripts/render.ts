@@ -11,44 +11,8 @@ import { spawnSync } from "node:child_process";
 import { mkdirSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 import { cuesToVtt } from "../src/kit/cues";
-import type { Cue } from "../src/kit/cues";
-import { buildModel, quadraticDefaults } from "../src/videos/quadratic/model";
-import { cues as quadraticCues, QUADRATIC_SECONDS } from "../src/videos/quadratic/timeline";
-import { cues as derivativeCues, DERIVATIVE_SECONDS } from "../src/videos/derivative/timeline";
-import { cues as arctanCues, ARCTAN_SECONDS } from "../src/videos/arctan/timeline";
-
-type Piece = {
-  slug: string;
-  id: string;
-  /** Seconds into the piece for the poster frame. */
-  poster: number;
-  captions?: { cues: Cue[]; end: number };
-};
-
-export const PIECES: Piece[] = [
-  {
-    slug: "quadratic",
-    id: "Quadratic",
-    poster: 62.6,
-    captions: { cues: quadraticCues(buildModel(quadraticDefaults)), end: QUADRATIC_SECONDS },
-  },
-  {
-    slug: "derivative",
-    id: "Derivative",
-    poster: 53.4,
-    captions: { cues: derivativeCues, end: DERIVATIVE_SECONDS },
-  },
-  {
-    slug: "arctan",
-    id: "Arctan",
-    poster: 41,
-    captions: { cues: arctanCues(), end: ARCTAN_SECONDS },
-  },
-  { slug: "shirt-anatomy", id: "ShirtAnatomy", poster: 12 },
-  { slug: "houndstooth", id: "Houndstooth", poster: 9 },
-  { slug: "festive-drop", id: "FestiveDrop", poster: 6 },
-  { slug: "kit-gallery", id: "KitGallery", poster: 10 },
-];
+import { PIECES } from "./pieces";
+import type { Piece } from "./pieces";
 
 const ROOT = join(import.meta.dirname, "..");
 const OUT = join(ROOT, "out");
