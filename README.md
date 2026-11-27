@@ -2,7 +2,7 @@
 
 2D motion graphics and animated explainers, built with [Remotion](https://www.remotion.dev), React and TypeScript. Six pieces, one shared component kit, and the tooling to render, check and publish them.
 
-**Watch them:** [the portfolio page](http://152.67.9.167) · by [Kordor Pyrbot](https://github.com/Darkboy17)
+**Watch them:** [the portfolio page](https://kpyrbot.duckdns.org) · by [Kordor Pyrbot](https://github.com/Darkboy17)
 
 | | Piece | Format | What it shows |
 | --- | --- | --- | --- |
@@ -73,9 +73,9 @@ Every push to `main` runs [`.github/workflows/ci-cd.yml`](.github/workflows/ci-c
 
 1. **Check**: lint, typecheck, unit tests, the asset generators, and one rendered still per piece (pull requests stop here).
 2. **Render and build the image**: earlier renders come back from the Actions cache, and `npm run render -- --changed` re-renders only the pieces whose source changed. Then the showreel and page are built and the nginx image is pushed to `ghcr.io/darkboy17/motion-portfolio`, tagged with the commit.
-3. **Deploy**: over SSH, the Oracle VM pulls that image and swaps the running container ([`deploy/remote-deploy.sh`](deploy/remote-deploy.sh)); the job then checks `/healthz` from outside.
+3. **Deploy**: over SSH, the Oracle VM pulls that image and restarts two containers on one Docker network ([`deploy/remote-deploy.sh`](deploy/remote-deploy.sh)): the nginx site, which isn't exposed, and [Caddy](deploy/Caddyfile) on ports 80 and 443, which keeps a Let's Encrypt certificate for the domain, redirects HTTP (and the bare IP) to HTTPS, and forwards requests to the site. The job then checks `/healthz` over HTTPS from outside.
 
-The repository needs two variables (`VM_HOST`, `VM_USER`) and two secrets (`VM_SSH_KEY`, a key used only for deploys, and `VM_KNOWN_HOSTS`). To roll back, run the deploy script with an earlier commit's tag.
+The repository needs three variables (`VM_HOST`, `VM_USER`, `SITE_DOMAIN`) and two secrets (`VM_SSH_KEY`, a key used only for deploys, and `VM_KNOWN_HOSTS`). To roll back, run the deploy script with an earlier commit's tag.
 
 ## Assets and licences
 
