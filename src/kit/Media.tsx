@@ -101,14 +101,35 @@ const hexToUnit = (hex: string): [number, number, number] => {
   return [((n >> 16) & 255) / 255, ((n >> 8) & 255) / 255, (n & 255) / 255];
 };
 
-/** Plays a Lottie file from public/lottie, optionally recoloured to a theme colour. */
-export const LottieClip: React.FC<{
+type LottieProps = {
   file: string;
   tint?: string;
   style?: React.CSSProperties;
   loop?: boolean;
   playbackRate?: number;
-}> = ({ file, tint, style, loop = false, playbackRate = 1 }) => {
+};
+
+/**
+ * Plays a Lottie file from public/lottie, optionally recoloured to a theme
+ * colour. With `at`, playback starts that many seconds into the Sequence.
+ */
+export const LottieClip: React.FC<LottieProps & { at?: number }> = ({ at, ...props }) => {
+  const sec = useSec();
+  if (at === undefined) return <LottieData {...props} />;
+  return (
+    <Sequence from={sec(at)} layout="none" name={`lottie:${props.file}`}>
+      <LottieData {...props} />
+    </Sequence>
+  );
+};
+
+const LottieData: React.FC<LottieProps> = ({
+  file,
+  tint,
+  style,
+  loop = false,
+  playbackRate = 1,
+}) => {
   const [handle] = useState(() => delayRender(`lottie:${file}`));
   const [data, setData] = useState<LottieAnimationData | null>(null);
   useEffect(() => {

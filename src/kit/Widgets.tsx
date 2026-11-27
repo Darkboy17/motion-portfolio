@@ -202,6 +202,7 @@ export const Pill: React.FC<{
       style={{
         ...enterStyle(p, exit, { dy: 12, scale: 0.8 }),
         display: "inline-flex",
+        alignSelf: "flex-start",
         alignItems: "center",
         gap: 10,
         padding: `${size * 0.32}px ${size * 0.7}px`,

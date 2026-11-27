@@ -291,7 +291,7 @@ export const Guide: React.FC<{
   exitAt?: number;
   color: string;
   label?: string;
-  labelSide?: "start" | "end";
+  labelSide?: "start" | "end" | "above";
   dash?: string;
   width?: number;
 }> = ({
@@ -323,7 +323,14 @@ export const Guide: React.FC<{
     a = g.p(x ?? 0, y0);
     b = g.p(x ?? 0, y0 + (y1 - y0) * p);
   }
-  const labelPt = labelSide === "end" ? b : a;
+  // Horizontal guides label beside an end, or above the far end; vertical guides label at the top.
+  const horizontal = y !== undefined;
+  const lp = labelSide === "start" ? a : b;
+  const lx = horizontal
+    ? lp.x + (labelSide === "end" ? 12 : labelSide === "start" ? -12 : 0)
+    : lp.x;
+  const ly = horizontal ? lp.y + (labelSide === "above" ? -16 : 0) : lp.y - 14;
+  const anchor = !horizontal ? "middle" : labelSide === "end" ? "start" : "end";
   return (
     <g opacity={1 - exit}>
       <line
@@ -338,14 +345,14 @@ export const Guide: React.FC<{
       />
       {label ? (
         <text
-          x={labelPt.x + (y !== undefined ? (labelSide === "end" ? 12 : -12) : 0)}
-          y={labelPt.y + (y !== undefined ? 0 : -14)}
+          x={lx}
+          y={ly}
           fill={color}
           fontFamily={fonts.sans}
           fontWeight={700}
           fontSize={22}
-          textAnchor={y !== undefined ? (labelSide === "end" ? "start" : "end") : "middle"}
-          dominantBaseline={y !== undefined ? "central" : "auto"}
+          textAnchor={anchor}
+          dominantBaseline={horizontal && labelSide !== "above" ? "central" : "auto"}
           opacity={tween(p, [0.6, 1], [0, 1])}
         >
           {label}

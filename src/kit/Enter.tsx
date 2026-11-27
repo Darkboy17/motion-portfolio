@@ -1,6 +1,7 @@
 import React from "react";
-import { enterStyle, useExit, useSec, useSpring } from "./motion";
-import { timing } from "./theme";
+import { AbsoluteFill, useCurrentFrame, useVideoConfig } from "remotion";
+import { enterStyle, tween, useExit, useSec, useSpring } from "./motion";
+import { ease, timing } from "./theme";
 import type { SpringName } from "./theme";
 
 type EnterProps = {
@@ -74,4 +75,20 @@ export const ExitAt: React.FC<{
       {children}
     </div>
   );
+};
+
+/** Fades the whole frame to paper over the last `seconds` of the composition. */
+export const EndFade: React.FC<{ color: string; seconds?: number }> = ({
+  color,
+  seconds = 0.8,
+}) => {
+  const frame = useCurrentFrame();
+  const { durationInFrames, fps } = useVideoConfig();
+  const o = tween(
+    frame,
+    [durationInFrames - seconds * fps, durationInFrames - 1],
+    [0, 1],
+    ease.inOutSoft,
+  );
+  return <AbsoluteFill style={{ background: color, opacity: o, pointerEvents: "none" }} />;
 };
