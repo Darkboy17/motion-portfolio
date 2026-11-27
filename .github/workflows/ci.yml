@@ -1,0 +1,31 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - name: Lint and typecheck
+        run: npm run lint
+      - name: Unit tests
+        run: npm test
+      - name: Regenerate the synthesized sounds and Lottie files
+        run: npm run assets
+      - name: Install Chrome for Remotion
+        run: npx remotion browser ensure
+      - name: Render one still per piece
+        run: npm run stills
+      - uses: actions/upload-artifact@v4
+        with:
+          name: stills
+          path: out/stills/*.png
