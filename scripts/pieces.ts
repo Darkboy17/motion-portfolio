@@ -11,6 +11,8 @@ export type Piece = {
   id: string;
   /** Seconds into the piece for the poster frame. */
   poster: number;
+  /** Source folder under src/videos, when it differs from the slug. */
+  dir?: string;
   captions?: { cues: Cue[]; end: number };
 };
 
@@ -36,5 +38,5 @@ export const PIECES: Piece[] = [
   { slug: "shirt-anatomy", id: "ShirtAnatomy", poster: 13.6 },
   { slug: "houndstooth", id: "Houndstooth", poster: 14 },
   { slug: "festive-drop", id: "FestiveDrop", poster: 9.2 },
-  { slug: "kit-gallery", id: "KitGallery", poster: 10 },
+  { slug: "kit-gallery", id: "KitGallery", poster: 10, dir: "kit" },
 ];
