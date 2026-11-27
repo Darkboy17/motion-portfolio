@@ -1,28 +1,11 @@
 // The piece's colours: the atelier tokens, renamed for the festive story, plus
 // the shades a flat illustration needs. No hue here is new: every value is an
 // atelier token or a mix of two of them.
-import { palettes } from "../../kit";
+import { alpha, mix, palettes } from "../../kit";
 
 const a = palettes.atelier;
 
-const toRgb = (hex: string) => {
-  const n = parseInt(hex.slice(1), 16);
-  return [(n >> 16) & 255, (n >> 8) & 255, n & 255];
-};
-
-/** Mixes two #rrggbb tokens: t = 0 gives `from`, t = 1 gives `to`. Returns #rrggbb. */
-export const mix = (from: string, to: string, t: number): string => {
-  const p = toRgb(from);
-  const q = toRgb(to);
-  const k = Math.min(Math.max(t, 0), 1);
-  return `#${p
-    .map((v, i) =>
-      Math.round(v + (q[i] - v) * k)
-        .toString(16)
-        .padStart(2, "0"),
-    )
-    .join("")}`;
-};
+export { mix };
 
 /** The festive names for the atelier range. */
 export const fd = {
@@ -55,10 +38,7 @@ export const tones = (base: string): Tones => ({
 });
 
 /** Ink at an alpha, for soft drop shadows. */
-export const inkShadow = (alpha: number) => {
-  const [r, g, b] = toRgb(a.ink);
-  return `rgba(${r},${g},${b},${alpha})`;
-};
+export const inkShadow = (opacity: number) => alpha(a.ink, opacity);
 
 /** A pale wash of a colour on paper, for backdrops. */
 export const wash = (c: string, k = 0.84) => mix(c, a.paper, k);

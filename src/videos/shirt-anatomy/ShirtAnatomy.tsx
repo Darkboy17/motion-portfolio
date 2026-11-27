@@ -1,8 +1,7 @@
 // Anatomy of a Shirt: a button-down drawn as a fashion flat, taken apart into
 // its pattern pieces, measured, sewn back together and recut in four cloths.
 import React from "react";
-import { useCurrentFrame, useVideoConfig } from "remotion";
-import { Bed, EndFade, Sfx, Stage, palettes } from "../../kit";
+import { Bed, During, EndFade, Sfx, Stage, palettes } from "../../kit";
 import { Garment, buttonTimes, landingTime } from "./Garment";
 import {
   ConstructionPanel,
@@ -17,18 +16,6 @@ import { PIECES } from "./pieces";
 import { STEPS, STITCH, SWAPS, T } from "./timeline";
 
 export { SHIRTANATOMY_SECONDS } from "./timeline";
-
-/** Mounts its children only between two times (seconds), so idle panels cost nothing. */
-const During: React.FC<{ from: number; to: number; children: React.ReactNode }> = ({
-  from,
-  to,
-  children,
-}) => {
-  const frame = useCurrentFrame();
-  const { fps } = useVideoConfig();
-  const t = frame / fps;
-  return t >= from && t < to ? <>{children}</> : null;
-};
 
 export const ShirtAnatomy: React.FC = () => (
   <Stage variant="atelier">

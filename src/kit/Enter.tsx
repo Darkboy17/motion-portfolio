@@ -77,6 +77,18 @@ export const ExitAt: React.FC<{
   );
 };
 
+/** Mounts its children only between two times (seconds), so idle layers cost nothing. */
+export const During: React.FC<{ from: number; to: number; children: React.ReactNode }> = ({
+  from,
+  to,
+  children,
+}) => {
+  const frame = useCurrentFrame();
+  const { fps } = useVideoConfig();
+  const t = frame / fps;
+  return t >= from && t < to ? <>{children}</> : null;
+};
+
 /** Fades the whole frame to paper over the last `seconds` of the composition. */
 export const EndFade: React.FC<{ color: string; seconds?: number }> = ({
   color,

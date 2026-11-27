@@ -15,3 +15,4 @@ export * from "./Widgets";
 export * from "./Explainer";
 export * from "./Media";
 export * from "./math";
+export * from "./color";

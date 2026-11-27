@@ -1,7 +1,7 @@
 // The words, scene by scene. All times are absolute seconds from the beat sheet.
 import React from "react";
-import { useCurrentFrame, useVideoConfig } from "remotion";
-import { Enter, Kicker, WordReveal, breathe, fonts, palettes } from "../../kit";
+import { useCurrentFrame } from "remotion";
+import { During, Enter, Kicker, WordReveal, breathe, fonts, palettes } from "../../kit";
 import { Swatch } from "./Swatch";
 import { COLOURWAYS, PLATE, T, WEAVE_PLATE } from "./timeline";
 import { Caps, LetterReveal, Roll, Tag } from "./Type";
@@ -17,18 +17,6 @@ const serif: React.CSSProperties = {
   fontWeight: 400,
   color: c.ink,
   letterSpacing: "-0.015em",
-};
-
-/** Mounts its children only between two times, so off-screen copy costs nothing. */
-const During: React.FC<{ from: number; to: number; children: React.ReactNode }> = ({
-  from,
-  to,
-  children,
-}) => {
-  const frame = useCurrentFrame();
-  const { fps } = useVideoConfig();
-  const t = frame / fps;
-  return t >= from && t < to ? <>{children}</> : null;
 };
 
 /** A slow float for type that holds on screen for more than a couple of seconds. */

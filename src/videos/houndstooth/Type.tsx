@@ -14,15 +14,12 @@ import {
   useExit,
   useSec,
   useSpring,
+  alpha,
 } from "../../kit";
 
 const c = palettes.atelier;
 
-/** A token colour at a given opacity, for shadows and washes. */
-export const alpha = (hex: string, a: number) => {
-  const n = parseInt(hex.replace("#", ""), 16);
-  return `rgba(${(n >> 16) & 255}, ${(n >> 8) & 255}, ${n & 255}, ${a})`;
-};
+export { alpha };
 
 /** Manrope small caps: the label voice of the piece. */
 export const Caps: React.FC<{
